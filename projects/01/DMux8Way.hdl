@@ -10,6 +10,7 @@
  *                            etc.
  *                            {0, 0, 0, 0, 0, 0, 0, in} if sel == 111
  */
+ //                                                          sell 210
 
 CHIP DMux8Way {
     IN in, sel[3];
@@ -17,4 +18,39 @@ CHIP DMux8Way {
 
     PARTS:
     // Put your code here:
+    Not(in=sel[0], out=notsel0);
+    Not(in=sel[1], out=notsel1);
+    Not(in=sel[2], out=notsel2);
+
+    And(a=in, b=notsel0, out=wa1);
+    And(a=wa1, b=notsel1, out=wa2);
+    And(a=wa2, b=notsel2, out=a);
+
+    And(a=in, b=sel[0], out=wb1);
+    And(a=wb1, b=notsel1, out=wb2);
+    And(a=wb2, b=notsel2, out=b);
+
+    And(a=in, b=notsel0, out=wc1);
+    And(a=wc1, b=sel[1], out=wc2);
+    And(a=wc2, b=notsel2, out=c);
+    
+    And(a=in, b=sel[0], out=wd1);
+    And(a=wd1, b=sel[1], out=wd2);
+    And(a=wd2, b=notsel2, out=d);
+    
+    And(a=in, b=notsel0, out=we1);
+    And(a=we1, b=notsel1, out=we2);
+    And(a=we2, b=sel[2], out=e);
+    
+    And(a=in, b=sel[0], out=wf1);
+    And(a=wf1, b=notsel1, out=wf2);
+    And(a=wf2, b=sel[2], out=f);
+    
+    And(a=in, b=notsel0, out=wg1);
+    And(a=wg1, b=sel[1], out=wg2);
+    And(a=wg2, b=sel[2], out=g);
+    
+    And(a=in, b=sel[0], out=wh1);
+    And(a=wh1, b=sel[1], out=wh2);
+    And(a=wh2, b=sel[2], out=h);
 }

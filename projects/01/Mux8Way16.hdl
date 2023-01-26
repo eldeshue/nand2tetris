@@ -19,4 +19,56 @@ CHIP Mux8Way16 {
 
     PARTS:
     // Put your code here:
+    Not(in=sel[0], out=notsel0);
+    Not(in=sel[1], out=notsel1);
+    Not(in=sel[2], out=notsel2);
+
+    Parallel16(in=sel[0], out=sel0b);
+    Parallel16(in=sel[1], out=sel1b);
+    Parallel16(in=sel[2], out=sel2b);
+    Parallel16(in=notsel0, out=notsel0b);
+    Parallel16(in=notsel1, out=notsel1b);
+    Parallel16(in=notsel2, out=notsel2b);
+
+    And16(a=a, b=notsel0b, out=wa1);
+    And16(a=wa1, b=notsel1b, out=wa2);
+    And16(a=wa2, b=notsel2b, out=wa3);
+
+    And16(a=b, b=sel0b, out=wb1);
+    And16(a=wb1, b=notsel1b, out=wb2);
+    And16(a=wb2, b=notsel2b, out=wb3);
+    
+    And16(a=c, b=notsel0b, out=wc1);
+    And16(a=wc1, b=sel1b, out=wc2);
+    And16(a=wc2, b=notsel2b, out=wc3);
+    
+    And16(a=d, b=sel0b, out=wd1);
+    And16(a=wd1, b=sel1b, out=wd2);
+    And16(a=wd2, b=notsel2b, out=wd3);
+    
+    And16(a=e, b=notsel0b, out=we1);
+    And16(a=we1, b=notsel1b, out=we2);
+    And16(a=we2, b=sel2b, out=we3);
+    
+    And16(a=f, b=sel0b, out=wf1);
+    And16(a=wf1, b=notsel1b, out=wf2);
+    And16(a=wf2, b=sel2b, out=wf3);
+    
+    And16(a=g, b=notsel0b, out=wg1);
+    And16(a=wg1, b=sel1b, out=wg2);
+    And16(a=wg2, b=sel2b, out=wg3);
+    
+    And16(a=h, b=sel0b, out=wh1);
+    And16(a=wh1, b=sel1b, out=wh2);
+    And16(a=wh2, b=sel2b, out=wh3);
+
+    Or16(a=wa3, b=wb3, out=w1);
+    Or16(a=wc3, b=wd3, out=w2);
+    Or16(a=we3, b=wf3, out=w3);
+    Or16(a=wg3, b=wh3, out=w4);
+
+    Or16(a=w1, b=w2, out=w5);
+    Or16(a=w3, b=w4, out=w6);
+
+    Or16(a=w5, b=w6, out=out);
 }

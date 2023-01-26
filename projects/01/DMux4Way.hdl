@@ -10,6 +10,7 @@
  *                {0, 0, in, 0} if sel == 10
  *                {0, 0, 0, in} if sel == 11
  */
+ //                                sel == sel[1]sel[0]
 
 CHIP DMux4Way {
     IN in, sel[2];
@@ -17,4 +18,18 @@ CHIP DMux4Way {
 
     PARTS:
     // Put your code here:
+    Not(in=sel[0], out=notsel0);
+    Not(in=sel[1], out=notsel1);
+
+    And(a=in, b=notsel0, out=wa1);
+    And(a=wa1, b=notsel1, out=a);
+
+    And(a=in, b=sel[0], out=wb1);
+    And(a=wb1, b=notsel1, out=b);
+
+    And(a=in, b=notsel0, out=wc1);
+    And(a=wc1, b=sel[1], out=c);
+    
+    And(a=in, b=sel[0], out=wd1);
+    And(a=wd1, b=sel[1], out=d);
 }
