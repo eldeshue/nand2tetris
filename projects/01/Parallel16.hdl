@@ -1,0 +1,25 @@
+
+CHIP Parallel16 {
+  IN in;
+  OUT out[16];
+
+  PARTS:
+  Not(in=in, out=temp);
+
+  Not(in=temp, out=out[0]);
+  Not(in=temp, out=out[1]);
+  Not(in=temp, out=out[2]);
+  Not(in=temp, out=out[3]);
+  Not(in=temp, out=out[4]);
+  Not(in=temp, out=out[5]);
+  Not(in=temp, out=out[6]);
+  Not(in=temp, out=out[7]);
+  Not(in=temp, out=out[8]);
+  Not(in=temp, out=out[9]);
+  Not(in=temp, out=out[10]);
+  Not(in=temp, out=out[11]);
+  Not(in=temp, out=out[12]);
+  Not(in=temp, out=out[13]);
+  Not(in=temp, out=out[14]);
+  Not(in=temp, out=out[15]);
+}
