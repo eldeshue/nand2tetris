@@ -42,49 +42,33 @@ CHIP ALU {
         ng; // 1 if (out < 0),  0 otherwise
 
     PARTS:
-   // Put you code here:
-   Parallel16(in=zx, out=zxb);   // amplify an input bit to 16 bit bus.
-   Parallel16(in=nx, out=nxb);
-   Parallel16(in=zy, out=zyb);
-   Parallel16(in=ny, out=nyb);
-   Parallel16(in=f, out=fb);
-   Parallel16(in=no, out=nob);
-   Not16(in=fb, out=nfb);
+        // Put you code here:
+        Parallel16(in=zx, out=zxb);   // amplify an input bit to 16 bit bus.
+        Parallel16(in=nx, out=nxb);
+        Parallel16(in=zy, out=zyb);
+        Parallel16(in=ny, out=nyb);
+        Parallel16(in=f, out=fb);
+        Parallel16(in=no, out=nob);
+        Not16(in=fb, out=nfb);
 
-   Not16(in=zxb, out=nzxb);
-   Not16(in=zyb, out=nzyb);
-   And16(a=x, b=nzxb, out=x1);
-   And16(a=y, b=nzyb, out=y1);
+        Not16(in=zxb, out=nzxb);
+        Not16(in=zyb, out=nzyb);
+        And16(a=x, b=nzxb, out=x1); // set input 0, if the z signal is 1
+        And16(a=y, b=nzyb, out=y1);
 
-   Xor16(a=x1, b=nxb, out=x2); //16bit Xor gate can reverse the a input by selecting b
-   Xor16(a=y1, b=nyb, out=y2);
-   
-   Add16(a=x2, b=y2, out=w1);  
-   And16(a=x2, b=y2, out=w2);
+        Xor16(a=x1, b=nxb, out=x2); //16bit Xor gate can reverse the a input by n
+        Xor16(a=y1, b=nyb, out=y2);
 
-   And16(a=w1, b=fb, out=w3);
-   And16(a=w2, b=nfb, out=w4);
-   Or16(a=w3, b=w4, out=w5);
+        Add16(a=x2, b=y2, out=w1); // f == 1 
+        And16(a=x2, b=y2, out=w2); // f == 0
 
-   Xor16(a=w5, b=nob, out=out);
-   
-   /* ----------------------------------------- */
-   And(a=w5[15], b=true, out=ng); 
-   
-   Or(a=w5[0], b=false, out=c0);
-   Or(a=w5[1], b=c0, out=c1);
-   Or(a=w5[2], b=c1, out=c2);
-   Or(a=w5[3], b=c2, out=c3);
-   Or(a=w5[4], b=c3, out=c4);
-   Or(a=w5[5], b=c4, out=c5);
-   Or(a=w5[6], b=c5, out=c6);
-   Or(a=w5[7], b=c6, out=c7);
-   Or(a=w5[8], b=c7, out=c8);
-   Or(a=w5[9], b=c8, out=c9);
-   Or(a=w5[10], b=c9, out=c10);
-   Or(a=w5[11], b=c10, out=c11);
-   Or(a=w5[12], b=c11, out=c12);
-   Or(a=w5[13], b=c12, out=c13);
-   Or(a=w5[14], b=c13, out=c14);
-   Or(a=w5[15], b=c14, out=zr);
+        And16(a=w1, b=fb, out=w3);
+        And16(a=w2, b=nfb, out=w4);
+        Or16(a=w3, b=w4, out=w5);
+
+        Xor16(a=w5, b=nob, out=out);
+        
+        /* ----------------------------------------- */
+        CheckZero(in=w5, out=zr);
+        CheckMSB(in=w5, out=ng); 
 }
