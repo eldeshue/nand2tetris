@@ -17,4 +17,34 @@ CHIP PC {
 
     PARTS:
     // Put your code here:
+    // invert signal
+    Not(in=reset, out=nreset);
+    Not(in=load, out=nload);
+    // amplifying signal
+    Parallel16(in=nreset, out=nresetb);
+    Parallel16(in=load, out=loadb);
+    Parallel16(in=nload, out=nloadb);
+    Parallel16(in=inc, out=incb);
+
+    // signal combination
+    Or(a=load, b=inc, out=w);
+    Or(a=w, b=reset, out=ld);
+    
+    // increase signal
+    Inc16(in=feedback, out=w1);
+    And16(a=w1, b=incb, out=w2);
+    // load signal
+    And16(a=w2, b=nloadb, out=w3);
+     // reset signal
+    And16(a=in, b=loadb, out=w4);
+    Or16(a=w3, b=w4, out=set);
+
+    And16(a=set, b=nresetb, out=din);
+
+    // 16 bit Register
+    Register(in=din, load=ld, out=feedback);
+
+    Not16(in=feedback, out=temp);
+    Not16(in=temp, out=out);
+
 }

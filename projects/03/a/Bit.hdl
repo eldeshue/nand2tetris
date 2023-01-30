@@ -15,4 +15,10 @@ CHIP Bit {
 
     PARTS:
     // Put your code here:
+    Mux(a=w2, b=in, sel=load, out=w1);  // sel == true, out == b
+    DFF(in=w1, out=w2);
+
+    // branching
+    Not(in=w2, out=w3);
+    Not(in=w3, out=out);
 }
