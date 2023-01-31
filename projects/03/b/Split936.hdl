@@ -1,0 +1,27 @@
+CHIP Split936 {
+  IN in[9];
+  OUT high[3], low[6];
+
+  PARTS:
+
+  Not(in=in[0], out=temp1);
+  Not(in=in[1], out=temp2);
+  Not(in=in[2], out=temp3);
+  Not(in=in[3], out=temp4);
+  Not(in=in[4], out=temp5);
+  Not(in=in[5], out=temp6);
+  Not(in=in[6], out=temp7);
+  Not(in=in[7], out=temp8);
+  Not(in=in[8], out=temp9);
+
+  Not(in=temp1, out=low[0]);
+  Not(in=temp2, out=low[1]);
+  Not(in=temp3, out=low[2]);
+  Not(in=temp4, out=low[3]);
+  Not(in=temp5, out=low[4]);
+  Not(in=temp6, out=low[5]);
+  Not(in=temp7, out=high[0]);
+  Not(in=temp8, out=high[1]);
+  Not(in=temp9, out=high[2]);
+
+}

@@ -1,0 +1,63 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/01/DMux8Way.hdl
+
+/**
+ * 8-way demultiplexor:
+ * {a, b, c, d, e, f, g, h} = {in, 0, 0, 0, 0, 0, 0, 0} if sel == 000
+ *                            {0, in, 0, 0, 0, 0, 0, 0} if sel == 001
+ *                            etc.
+ *                            {0, 0, 0, 0, 0, 0, 0, in} if sel == 111
+ */
+ //                                                          sell 210
+
+CHIP DMux8Way16 {
+    IN in[16], sel[3];
+    OUT a[16], b[16], c[16], d[16], e[16], f[16], g[16], h[16];
+
+    PARTS:
+    // Put your code here:
+    Not(in=sel[0], out=notsel0);
+    Not(in=sel[1], out=notsel1);
+    Not(in=sel[2], out=notsel2);
+
+    Parallel16(in=sel[0], out=sel0b);
+    Parallel16(in=sel[1], out=sel1b);
+    Parallel16(in=sel[2], out=sel2b);
+    Parallel16(in=notsel0, out=notsel0b);
+    Parallel16(in=notsel1, out=notsel1b);
+    Parallel16(in=notsel2, out=notsel2b);
+
+    And16(a=in, b=notsel0b, out=wa1);
+    And16(a=wa1, b=notsel1b, out=wa2);
+    And16(a=wa2, b=notsel2b, out=a);
+
+    And16(a=in, b=sel0b, out=wb1);
+    And16(a=wb1, b=notsel1b, out=wb2);
+    And16(a=wb2, b=notsel2b, out=b);
+
+    And16(a=in, b=notsel0b, out=wc1);
+    And16(a=wc1, b=sel1b, out=wc2);
+    And16(a=wc2, b=notsel2b, out=c);
+    
+    And16(a=in, b=sel0b, out=wd1);
+    And16(a=wd1, b=sel1b, out=wd2);
+    And16(a=wd2, b=notsel2b, out=d);
+    
+    And16(a=in, b=notsel0b, out=we1);
+    And16(a=we1, b=notsel1b, out=we2);
+    And16(a=we2, b=sel2b, out=e);
+    
+    And16(a=in, b=sel0b, out=wf1);
+    And16(a=wf1, b=notsel1b, out=wf2);
+    And16(a=wf2, b=sel2b, out=f);
+    
+    And16(a=in, b=notsel0b, out=wg1);
+    And16(a=wg1, b=sel1b, out=wg2);
+    And16(a=wg2, b=sel2b, out=g);
+    
+    And16(a=in, b=sel0b, out=wh1);
+    And16(a=wh1, b=sel1b, out=wh2);
+    And16(a=wh2, b=sel2b, out=h);
+}

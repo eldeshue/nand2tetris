@@ -16,4 +16,28 @@ CHIP RAM4K {
 
     PARTS:
     // Put your code here:
+    // Adress Splitting
+    Split1239(in=address, high=high, low=low);
+
+    // load signal demultiplexing
+    DMux8Way(in=load, sel=high, 
+        a=dl1, b=dl2, c=dl3, d=dl4, e=dl5, f=dl6, g=dl7, h=dl8);
+
+    // data input demultiplexing
+    DMux8Way16(in=in, sel=high, 
+        a=di1, b=di2, c=di3, d=di4, e=di5, f=di6, g=di7, h=di8);
+
+    // 8 * 512 = 4K RAM
+    RAM512(in=di1, load=dl1, address=low, out=do1);
+    RAM512(in=di2, load=dl2, address=low, out=do2);
+    RAM512(in=di3, load=dl3, address=low, out=do3);
+    RAM512(in=di4, load=dl4, address=low, out=do4);
+    RAM512(in=di5, load=dl5, address=low, out=do5);
+    RAM512(in=di6, load=dl6, address=low, out=do6);
+    RAM512(in=di7, load=dl7, address=low, out=do7);
+    RAM512(in=di8, load=dl8, address=low, out=do8);
+
+    // data output multiplexing
+    Mux8Way16(a=do1, b=do2, c=do3, d=do4, e=do5, f=do6, g=do7, h=do8, 
+        sel=high, out=out);
 }

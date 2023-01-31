@@ -16,4 +16,24 @@ CHIP RAM16K {
 
     PARTS:
     // Put your code here:
+    // Adress Splitting
+    Split14212(in=address, high=high, low=low);
+
+    // load signal demultiplexing
+    DMux4Way(in=load, sel=high, 
+        a=dl1, b=dl2, c=dl3, d=dl4);
+
+    // data input demultiplexing
+    DMux4Way16(in=in, sel=high, 
+        a=di1, b=di2, c=di3, d=di4);
+
+    // 4 * 4k = 16k RAM
+    RAM4K(in=di1, load=dl1, address=low, out=do1);
+    RAM4K(in=di2, load=dl2, address=low, out=do2);
+    RAM4K(in=di3, load=dl3, address=low, out=do3);
+    RAM4K(in=di4, load=dl4, address=low, out=do4);
+
+    // data output multiplexing
+    Mux4Way16(a=do1, b=do2, c=do3, d=do4,  
+        sel=high, out=out);
 }
