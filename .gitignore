@@ -1,3 +1,4 @@
 # ignore simulation tools
 tools/
 *.out
+*.hack
