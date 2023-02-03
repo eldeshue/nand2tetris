@@ -12,3 +12,58 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+// mov KBD's value to SCREEN
+
+(Loop)
+  // check the KBD
+  @KBD
+  D=M
+  @Fill
+  D;JGT
+(Return)
+  @Erase
+  D;JEQ
+
+  @Loop
+  0;JMP
+
+(Fill)
+  @cursor
+  M=SCREEN
+  (Loop1)
+    @cursor
+    D=M
+    A=D
+    M=1 // fill the pixel
+    @cursor
+    M=M+1 // cursor move forward
+
+    @KBD
+    D=M
+    @Loop2
+    D;JEQ
+
+    @Loop1
+    0;JMP
+
+
+(Erase)
+  @cursor
+  M=SCREEN
+  (Loop2)
+    @cursor
+    D=M
+    A=D
+    M=0 // fill the pixel
+    @cursor
+    M=M+1 // cursor move forwardcursor
+
+    @KBD
+    D=M
+    @Loop1
+    D;JGT
+    
+    @Loop2
+    0;JMP
+    
