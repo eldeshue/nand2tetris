@@ -25,23 +25,21 @@
   @Erase
   D;JEQ
 
-  @Loop
-  0;JMP
-
 (Fill)
-  @cursor
-  M=SCREEN
+  @csr
+  M=0
   (Loop1)
-    @cursor
+    @csr
     D=M
-    A=D
-    M=1 // fill the pixel
-    @cursor
-    M=M+1 // cursor move forward
+    @SCREEN
+    A=D+A
+    M=-1 // fill the pixel
+    @csr
+    M=M+1 // cursor moves forward
 
     @KBD
     D=M
-    @Loop2
+    @Return
     D;JEQ
 
     @Loop1
@@ -49,19 +47,20 @@
 
 
 (Erase)
-  @cursor
-  M=SCREEN
+  @csr
+  M=0
   (Loop2)
-    @cursor
+    @csr
     D=M
-    A=D
-    M=0 // fill the pixel
-    @cursor
-    M=M+1 // cursor move forwardcursor
+    @SCREEN
+    A=D+A
+    M=0 // erase the pixel
+    @csr
+    M=M+1 // cursor moves forward
 
     @KBD
     D=M
-    @Loop1
+    @Loop
     D;JGT
     
     @Loop2
