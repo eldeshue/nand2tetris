@@ -1,0 +1,32 @@
+// decode instructions to control CPU and provide address to RAM.
+CHIP Decode {
+  IN instruction[16];
+
+  OUT 
+      // a - instructions
+      // 0 + 15bit address
+      address[16],
+
+      // c - instructions
+      // a   : decide input, mux
+      // c   : comp, decide ALU's function, 6bit
+      // d   : dest, 3bit
+      // j   : jump, 3bit
+      // 1 xx a c1 c2 c3 c4 c5 c6 d1 d2 d3 j1 j2 j3
+
+      ;
+
+
+  PARTS:
+
+  // if, address[15] == 0, a - instruction, address 
+  Not(in=instruction[15], out=n1);
+  Parallel16(in=n1, out=n16);
+  And16(a=n16, b=instruction, out=address);
+
+  // if, address[15] == 1, c - instruction, control signal 
+  Parallel16(in=instruction[15], out=p16);
+  And16(a=p16, b=instruction, out=c1);
+
+
+}
