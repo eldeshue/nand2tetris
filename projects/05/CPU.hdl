@@ -40,4 +40,8 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    
+    // PC receive a-instruction from decoder, whose msfb is 0.
+    PC(in=, load=, inc=, reset=, out=);
+
 }
