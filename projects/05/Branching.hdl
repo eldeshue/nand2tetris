@@ -1,0 +1,21 @@
+// Chip that decide jump or not
+CHIP Branching {
+  IN
+    zr, ng,     // status of ALU's result
+    j1, j2, j3;
+
+  OUT
+    result;
+
+  PARTS:
+  Nand(a=zr, b=ng, out=ps); // ALU's result is positive
+
+  And(a=j1, b=ng, out=jlt);
+  And(a=j2, b=zr, out=jeq);
+  And(a=j3, b=ps, out=jgt);
+
+  Or(a=jlt, b=jeq, out=jle);
+  Or(a=jgt, b=jeq, out=jge);
+  Or(a=jle, b=jge, out=result);
+
+}
