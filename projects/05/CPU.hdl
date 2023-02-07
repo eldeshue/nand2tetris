@@ -42,6 +42,40 @@ CHIP CPU {
     // Put your code here:
     
     // PC receive a-instruction from decoder, whose msfb is 0.
-    PC(in=, load=, inc=, reset=, out=);
+    Decode(instruction=instruction, 
+        mux1=m1, mux2=m2, 
+        zD=zd, nD=nd, zAM=zam, nAM=nam, f=f, no=no,
+        wrA=wrA, wrD=wrD, wrM=writeM,
+        j1=j1, j2=j2, j3=j3);
+    
+    // mux 1
+    Mux16(a=ALUout, b=instruction, sel=m1, out=Ain);
 
+    // Register A
+    Register(in=Ain, load=wrA, out=Aout);
+
+    // mux 2
+    Mux16(a=Aout, b=inM, sel=m2, out=AM);
+
+    // Register D
+    DRegister(in=ALUout, load=wrD, out=D);
+
+    // ALU
+    ALU(x=D, y=AM, zx=zd, nx=nd, zy=zam, ny=nam, 
+        f=f, no=no, out=ALUout, zr=zr, ng=ng);
+
+    // PC, Program Counter
+    // jump(branching) needed, send load == 1 and in == ROM address
+    // done executing current instructions, send inc == 1
+    Not(in=m1, out=nm1);
+    Branching(zr=zr, ng=ng, j1=j1, j2=j2, j3=j3, result=jmpsignal);
+    PC(in=Aout, load=jmpsignal, inc=nm1, reset=reset, out=PCout);
+
+    // change width of output data, 16bit to 15bit
+    From16to15(in=Aout, out=addressM);
+    From16to15(in=PCout, out=pc);
+
+    // output data of cpu
+    Not16(in=ALUout, out=ALUtemp);
+    Not16(in=ALUtemp, out=outM);
 }
