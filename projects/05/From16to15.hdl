@@ -1,0 +1,28 @@
+
+CHIP From16to15 {
+  IN
+    in[16];
+  OUT
+    out[15];
+
+  PARTS:
+
+  Xor(a=in[15], b=in[15], out=temp);
+  Not(in=temp, out=nothing);  // always true
+
+  And(a=nothing, b=in[14], out=out[14]);  // true * a = a
+  And(a=nothing, b=in[13], out=out[13]);
+  And(a=nothing, b=in[12], out=out[12]);
+  And(a=nothing, b=in[11], out=out[11]);
+  And(a=nothing, b=in[10], out=out[10]);
+  And(a=nothing, b=in[9], out=out[9]);
+  And(a=nothing, b=in[8], out=out[8]);
+  And(a=nothing, b=in[7], out=out[7]);
+  And(a=nothing, b=in[6], out=out[6]);
+  And(a=nothing, b=in[5], out=out[5]);
+  And(a=nothing, b=in[4], out=out[4]);
+  And(a=nothing, b=in[3], out=out[3]);
+  And(a=nothing, b=in[2], out=out[2]);
+  And(a=nothing, b=in[1], out=out[1]);
+  And(a=nothing, b=in[0], out=out[0]);
+}
