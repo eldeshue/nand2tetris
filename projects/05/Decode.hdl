@@ -13,53 +13,26 @@ CHIP Decode {
       wrA, wrD, wrM, // d   : dest, write signal, 3bit
       j1, j2, j3;  // j   : jump, 3bit
       
-
-
   PARTS:
   // preprocessing instructions
-  /*
-  // if, instruction[15] == 0, a - instruction, instruction 
-  Not(in=instruction[15], out=n1);
-  Parallel16(in=n1, out=n16);
-  And16(a=n16, b=instruction, out=instruction);
-
-  // if, instruction[15] == 1, c - instruction, control signal 
-  Parallel16(in=instruction[15], out=p16);
-  And16(a=p16, b=instruction, out=c1);
-  */
-
   // set the output
-  Not(in=instruction[15], out=msfb);
-  Not(in=msfb, out=mux1);
+  And(a=instruction[15], b=instruction[15], out=mux1);
 
-  Not(in=instruction[12], out=a);
-  Not(in=a, out=mux2);
+  And(a=instruction[15], b=instruction[12], out=mux2);
 
-  Not(in=instruction[11], out=c1);
-  Not(in=c1, out=zD);
-  Not(in=instruction[10], out=c2);
-  Not(in=c2, out=nD);
-  Not(in=instruction[9], out=c3);
-  Not(in=c3, out=zAM);
-  Not(in=instruction[8], out=c4);
-  Not(in=c4, out=nAM);
-  Not(in=instruction[7], out=c5);
-  Not(in=c5, out=f);
-  Not(in=instruction[6], out=c6);
-  Not(in=c6, out=no);
+  And(a=instruction[15], b=instruction[11], out=zD);
+  And(a=instruction[15], b=instruction[10], out=nD);
+  And(a=instruction[15], b=instruction[9], out=zAM);
+  And(a=instruction[15], b=instruction[8], out=nAM);
+  And(a=instruction[15], b=instruction[7], out=f);
+  And(a=instruction[15], b=instruction[6], out=no);
 
+  Not(in=instruction[15], out=nmsfb);
+  Or(a=nmsfb, b=instruction[5], out=wrA);
+  And(a=instruction[15], b=instruction[4], out=wrD);
+  And(a=instruction[15], b=instruction[3], out=wrM);
 
-  Not(in=instruction[5], out=d1);
-  Not(in=d1, out=wrA);
-  Not(in=instruction[4], out=d2);
-  Not(in=d2, out=wrD);
-  Not(in=instruction[3], out=d3);
-  Not(in=d3, out=wrM);
-
-  Not(in=instruction[2], out=l1);
-  Not(in=l1, out=j1);
-  Not(in=instruction[1], out=l2);
-  Not(in=l2, out=j2);
-  Not(in=instruction[0], out=l3);
-  Not(in=l3, out=j3);
+  And(a=instruction[15], b=instruction[2], out=j1);
+  And(a=instruction[15], b=instruction[1], out=j2);
+  And(a=instruction[15], b=instruction[0], out=j3);
 }

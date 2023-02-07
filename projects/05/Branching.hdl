@@ -8,14 +8,20 @@ CHIP Branching {
     result;
 
   PARTS:
-  Nand(a=zr, b=ng, out=ps); // ALU's result is positive
+  Not(in=zr, out=nzr);
+  Not(in=ng, out=nng);
+  And(a=nzr, b=nng, out=ps); // ALU's result is positive
 
   And(a=j1, b=ng, out=jlt);
   And(a=j2, b=zr, out=jeq);
   And(a=j3, b=ps, out=jgt);
 
-  Or(a=jlt, b=jeq, out=jle);
   Or(a=jgt, b=jeq, out=jge);
-  Or(a=jle, b=jge, out=result);
+  Or(a=jlt, b=jge, out=temp);
+
+  And(a=j1, b=j2, out=temp1);
+  And(a=temp1, b=j3, out=jmp);
+
+  Or(a=jmp, b=temp, out=result);
 
 }
