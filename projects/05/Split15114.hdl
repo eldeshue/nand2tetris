@@ -1,0 +1,40 @@
+
+CHIP Split15114 {
+  IN  in[15];
+  OUT high, low[14];
+
+  PARTS:
+  Not(in=in[0], out=temp1);
+  Not(in=in[1], out=temp2);
+  Not(in=in[2], out=temp3);
+  Not(in=in[3], out=temp4);
+  Not(in=in[4], out=temp5);
+  Not(in=in[5], out=temp6);
+  Not(in=in[6], out=temp7);
+  Not(in=in[7], out=temp8);
+  Not(in=in[8], out=temp9);
+  Not(in=in[9], out=temp10);
+  Not(in=in[10], out=temp11);
+  Not(in=in[11], out=temp12);
+  Not(in=in[12], out=temp13);
+  Not(in=in[13], out=temp14);
+  Not(in=in[14], out=temp15);
+
+  Not(in=temp1, out=low[0]);
+  Not(in=temp2, out=low[1]);
+  Not(in=temp3, out=low[2]);
+  Not(in=temp4, out=low[3]);
+  Not(in=temp5, out=low[4]);
+  Not(in=temp6, out=low[5]);
+  Not(in=temp7, out=low[6]);
+  Not(in=temp8, out=low[7]);
+  Not(in=temp9, out=low[8]);
+  Not(in=temp10, out=low[9]);
+  Not(in=temp11, out=low[10]);
+  Not(in=temp12, out=low[11]);
+  Not(in=temp13, out=low[12]);
+  Not(in=temp14, out=low[13]);
+
+  Not(in=temp15, out=high);
+
+}
