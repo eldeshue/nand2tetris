@@ -28,4 +28,23 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+
+    // split the address, 15 = 1 + 14
+    Split15114(in=address, high=high, low=low);
+    Split14113(in=low, high=high1, low=low1);
+
+    // demux.
+    DMux(in=load, sel=high, a=ld1, b=ld2);
+
+    // 16K data RAM
+    RAM16K(in=in, load=ld1, address=low, out=ram);
+    // 8k Screen 
+    Screen(in=in, load=ld2, address=low1, out=scr);
+    // 1 word Keyboard
+    Keyboard(out=kbd);
+
+    // mux.
+    Mux16(a=scr, b=kbd, sel=high1, out=io);
+    Mux16(a=ram, b=io, sel=high, out=out);
+
 }
