@@ -5,7 +5,7 @@
 #define _HACK_CODE_
 
 #include <unordered_map>
-#include <queue>
+#include <deque>
 #include <bitset>
 #include "Symbol_table.h"
 
@@ -21,15 +21,12 @@ class Hack_Code_module {
   Hack_Code_module();
   ~Hack_Code_module();
 
-  std::string dest_to_code(std::string dest_key); 
-  std::string comp_to_code(std::string comp_key);
-  std::string jmp_to_code(std::string jmp_key); 
-
   // translate 
   // get mnemonic from input buffer
   // put bit string in the output buffer
-  void mnemonic_to_code( std::queue<std::string>& input_buffer , 
-                         std::queue<std::string>& output_buffer ); 
+  void mnemonic_to_code( std::string& input_buffer , 
+                         std::deque<std::string>& output_buffer,
+                         Symbol_table& sym_table  ); 
 
 };
 
