@@ -64,7 +64,6 @@ Hack_Code_module::~Hack_Code_module() {
   jmp_code_table.clear();
 }
 
-// translate 
 // get mnemonic from input buffer
 // put bit string in the output buffer
 void Hack_Code_module::mnemonic_to_code(
@@ -79,6 +78,7 @@ void Hack_Code_module::mnemonic_to_code(
 
   while(input_stream) {
     getline(input_stream, inst);
+
     char first_char = inst.front();
 
     if(first_char == '@') {
@@ -123,9 +123,10 @@ void Hack_Code_module::mnemonic_to_code(
       }
       else {
         jmp_key = inst.substr(j+1, std::string::npos);
+        j=j - d - 1;
       }
       // 3. comp, insert
-      std::string comp_key = inst.substr(d+1, j - d - 1);
+      std::string comp_key = inst.substr(d+1, j);
       // assemble the string and put
       std::string code = comp_code_table[comp_key];
       code.append(dest_code_table[dest_key]);
