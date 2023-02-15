@@ -21,6 +21,35 @@ class Hack_Assembly_Parser {
                            std::string& buffer ); 
 };
 
+void erase_space(std::string& buffer) {
+  buffer.erase(
+    std::remove(buffer.begin(), buffer.end(), ' '), 
+    buffer.end()
+  );
+}
+
+void erase_comment(std::string& buffer) {
+  std::string::size_type cur_pos = 0;  
+  std::string::size_type end_pos;
+  
+  while((cur_pos = buffer.find("//",cur_pos)) != std::string::npos) {
+    end_pos = buffer.find('\n', cur_pos);
+    buffer.erase(buffer.begin() + cur_pos, buffer.begin() + end_pos);
+  }
+}
+
+void erase_EOL(std::string& buffer) {
+std::string::size_type cur_pos = 0;
+  while((cur_pos = buffer.find("\n\n",cur_pos)) != std::string::npos) {
+    while(buffer.at(cur_pos + 1) == '\n') {
+      buffer.erase(buffer.begin() + cur_pos);
+    }
+  }
+  if(buffer.front() == '\n') {
+    buffer.erase(buffer.begin());
+  }
+}
+
 void Hack_Assembly_Parser::parse_assembly(
   std::ifstream& input_stream,
   std::string& buffer 
@@ -40,29 +69,14 @@ void Hack_Assembly_Parser::parse_assembly(
   } 
 
   // erase all space 
-  buffer.erase(
-    remove(buffer.begin(), buffer.end(), ' '), 
-    buffer.end());
-
-  // erase comment line
-  std::string::size_type cur_pos = 0;  
-  std::string::size_type end_pos;
+  erase_space(buffer);
   
-  while((cur_pos = buffer.find("\\",cur_pos)) != std::string::npos) {
-    end_pos = buffer.find('\n', cur_pos);
-    buffer.erase(cur_pos, end_pos - cur_pos);
-  }
+  // erase comment line
+  erase_comment(buffer); 
 
   // erase all empty line
-  cur_pos = 0;
-  while((cur_pos = buffer.find("\n\n",cur_pos)) != std::string::npos) {
-    while(buffer.at(cur_pos + 1) == '\n') {
-      buffer.erase(cur_pos, 1);
-    }
-  }
-  if(buffer.front() == '\n') {
-    buffer.erase(buffer.begin());
-  }
+  erase_EOL(buffer);
+  
 }
 
 #endif

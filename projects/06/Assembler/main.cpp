@@ -3,6 +3,10 @@
 // take "program.asm" file as an input
 // and generate "program.hack" file as an output. 
 // 
+
+// g++ -o HackAssembler main.cpp Hack_Code_module.cpp Symbol_table.cpp
+// 
+
 #include <iostream>
 #include <fstream>
 #include <string>

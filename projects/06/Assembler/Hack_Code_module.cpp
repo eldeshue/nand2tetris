@@ -84,6 +84,7 @@ void Hack_Code_module::mnemonic_to_code(
     if(first_char == '@') {
       // a - instructions.
       inst.erase(inst.begin());
+
       // transform symbol to address value(decimal)
       int mem_address = sym_table.get(inst);
       if(mem_address == -1) {  // not symbol, just number
