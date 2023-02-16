@@ -17,7 +17,7 @@ int main()
 
     std::cout << "===== file reading =======" << std::endl;
     std::string test_subject;
-    std::ifstream test_file("../add/Add.asm");
+    std::ifstream test_file("../max/Max2.asm");
     if (test_file.is_open())
     {
         test_file.seekg(0, std::ios::end);   // move cursor to the end
@@ -56,8 +56,11 @@ int main()
     std::cout << "===== erase EOL ==========" << std::endl;
     erase_EOL(test_subject);
     std::cout << test_subject << std::endl;
-    std::cout << "===== Translate ==========" << std::endl;
+    std::cout << "===== get symbol =========" << std::endl;
     Symbol_table symtable;
+    symtable.scan_assembly(test_subject);
+    symtable.show_all();
+    std::cout << "===== Translate ==========" << std::endl;
     Hack_Code_module test_obj;
     std::deque<std::string> test_buffer;
     test_obj.mnemonic_to_code(test_subject, test_buffer, symtable);
@@ -67,16 +70,4 @@ int main()
     }
 
     std::cout << "==========================" << std::endl;
-    char c;
-    for (int i = 1; i < 5; i++)
-    {
-        if ((c = *(test_subject.end() - i)) == '\n')
-        {
-            std::cout << "true, " << i << std::endl;
-        }
-        else
-        {
-            std::cout << "false, " << c << std::endl;
-        }
-    }
 }
