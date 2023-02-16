@@ -8,13 +8,14 @@
 #include <string>
 
 // wrapper class for symbol table
-class Symbol_table {
-  private:
+class Symbol_table
+{
+private:
   // field
   // hash map
   std::unordered_map<std::string, int> table;
 
-  public: 
+public:
   // method
   // constructor
   Symbol_table();
@@ -22,18 +23,24 @@ class Symbol_table {
   // destructor
   ~Symbol_table();
 
+  // show contents
+  void show_all();
+
   // get
-  int get(std::string key) {
-    if(table.find(key) == table.end()) {
+  int get(std::string key)
+  {
+    if (table.find(key) == table.end())
+    {
       return -1;
     }
-    else{
+    else
+    {
       return table[key];
     }
   }
 
   // scan and set
-  int scan_assembly(std::string& input); 
+  int scan_assembly(std::string &input);
 };
 
 #endif
