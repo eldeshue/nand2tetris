@@ -110,7 +110,7 @@ void Hack_Code_module::mnemonic_to_code(
       int mem_address = sym_table.get(inst);
       if (mem_address == -1)
       { // not symbol, just number
-        std::bitset<16> code(stoi(inst));
+        std::bitset<16> code(std::stoi(inst));
         output_buffer.push_back(code.to_string());
       }
       else
