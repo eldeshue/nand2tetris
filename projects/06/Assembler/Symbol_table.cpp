@@ -107,9 +107,17 @@ int Symbol_table::scan_assembly(std::string &input_buffer)
       // doesn's exist, add new content
       auto itr = table.find(s);
       if (itr == table.end())
-      { // not an element of the table, new symbol
-        table.insert(std::make_pair(s, new_address));
-        new_address++;
+      { // not an element of the table, new symbol or number
+        try
+        {
+          std::stoi(s);
+        }
+        catch(const std::exception& e)
+        {
+          table.insert(std::make_pair(s, new_address));
+          new_address++;
+        }
+        // not symbol, just number, do not add to the table.
       }
     }
     else
