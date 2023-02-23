@@ -1,11 +1,15 @@
 #include <fstream>
 #include <sstream>
+#include <string>
+#include <deque>
+#include <tuple>
 #include "ASM_Writer.h"
+#include "arg1_Type.h"
 #include "arg2_Type.h"
 
 ASM_Writer::ASM_Writer()
 {
-  output_s = std::stringstream(ouput_buffer);
+  output_s = std::stringstream(output_buffer);
 }
 
 ASM_Writer::~ASM_Writer()
@@ -40,47 +44,47 @@ void ASM_Writer::writeSub()
   writeIncSP();
 }
 
-void ASM_Writer::writeGt(int i)
+void ASM_Writer::writeGt(int i, std::string &s)
 { // implement comparing two value by conditional jump.
   writeDecSP();
   output_s << "@SP\nA=M\nD=M\n"; // D = y
   writeDecSP();
-  output_s << "@SP\nA=M\nD=M-D\n@true" << i // M = x
-           << "\nD;JGT\n@false" << i        // if D = M - D > 0
-           << "\n0;JMP\n(true" << i
-           << ")\n@SP\nA=M\nM=-1\n@end" << i
-           << "\n0;JMP\n(false" << i
-           << ")\n@SP\nA=M\nM=0\n(end" << i
+  output_s << "@SP\nA=M\nD=M-D\n@true" << i << s // M = x
+           << "\nD;JGT\n@false" << i << s        // if D = M - D > 0
+           << "\n0;JMP\n(true" << i << s
+           << ")\n@SP\nA=M\nM=-1\n@end" << i << s
+           << "\n0;JMP\n(false" << i << s
+           << ")\n@SP\nA=M\nM=0\n(end" << i << s
            << ")\n";
   writeIncSP();
 }
 
-void ASM_Writer::writeLt(int i)
+void ASM_Writer::writeLt(int i, std::string &s)
 {
   writeDecSP();
   output_s << "@SP\nA=M\nD=M\n";
   writeDecSP();
-  output_s << "@SP\nA=M\nD=M-D\n@true" << i // M = x, D = y
-           << "\nD;JLT\n@false" << i        // if D = M - D < o
-           << "\n0;JMP\n(true" << i
-           << ")\n@SP\nA=M\nM=-1\n@end" << i
-           << "\n0;JMP\n(false" << i
-           << ")\n@SP\nA=M\nM=0\n(end" << i
+  output_s << "@SP\nA=M\nD=M-D\n@true" << i << s // M = x, D = y
+           << "\nD;JLT\n@false" << i << s        // if D = M - D < o
+           << "\n0;JMP\n(true" << i << s
+           << ")\n@SP\nA=M\nM=-1\n@end" << i << s
+           << "\n0;JMP\n(false" << i << s
+           << ")\n@SP\nA=M\nM=0\n(end" << i << s
            << ")\n";
   writeIncSP();
 }
 
-void ASM_Writer::writeEq(int i)
+void ASM_Writer::writeEq(int i, std::string &s)
 {
   writeDecSP();
   output_s << "@SP\nA=M\nD=M\n";
   writeDecSP();
-  output_s << "@SP\nA=M\nD=M-D\n@true" << i // M = x, D = y
-           << "\nD;JEQ\n@false" << i        // if D = M - D == 0
-           << "\n0;JMP\n(true" << i
-           << ")\n@SP\nA=M\nM=-1\n@end" << i
-           << "\n0;JMP\n(false" << i
-           << ")\n@SP\nA=M\nM=0\n(end" << i
+  output_s << "@SP\nA=M\nD=M-D\n@true" << i << s // M = x, D = y
+           << "\nD;JEQ\n@false" << i << s        // if D = M - D == 0
+           << "\n0;JMP\n(true" << i << s
+           << ")\n@SP\nA=M\nM=-1\n@end" << i << s
+           << "\n0;JMP\n(false" << i << s
+           << ")\n@SP\nA=M\nM=0\n(end" << i << s
            << ")\n";
   writeIncSP();
 }
@@ -179,7 +183,7 @@ void ASM_Writer::writeSegPop(int segment, int index)
     output_s << "@" << vm_file_name << "." << index
              << "\nD=A\n@R13\nM=D\n";
     break;
-  case CONST:
+  case CONST: // potential threat?
     output_s << "@" << index
              << "\nD=A\n@R13\nM=D\n";
     break;
@@ -202,4 +206,79 @@ void ASM_Writer::writeSegPop(int segment, int index)
   }
   writeDecSP();
   output_s << "@SP\nA=M\nD=M\n@R13\nA=M\nM=D\n"; // pop and put it in the destined address
+}
+///////////////////////////////
+
+///////////////////////////////
+void ASM_Writer::translate(std::string vm_file_nema, std::deque<std::tuple<int, int, int>> buffer)
+{
+  int i = 0;
+  while (buffer.begin() != buffer.end())
+  {
+    switch (std::get<0>(buffer.front()))
+    {
+    case C_ADD:
+      writeAdd();
+      break;
+    case C_SUB:
+      writeSub();
+      break;
+    case C_NEG:
+      writeNeg();
+      break;
+    case C_EQ:
+      writeEq(i, vm_file_name);
+      break;
+    case C_GT:
+      writeGt(i, vm_file_name);
+      break;
+    case C_LT:
+      writeLt(i, vm_file_name);
+      break;
+    case C_AND:
+      writeAnd();
+      break;
+    case C_OR:
+      writeOr();
+      break;
+    case C_NOT:
+      writeNot();
+      break;
+    case C_PUSH:
+      writeSegPush(std::get<1>(buffer.front()), std::get<2>(buffer.front()));
+      break;
+    case C_POP:
+      writeSegPop(std::get<1>(buffer.front()), std::get<2>(buffer.front()));
+      break;
+      /*
+    case C_LABEL:
+      break;
+    case C_GOTO:
+      break;
+    case C_IF:
+      break;
+    case C_FUNCTION:
+      break;
+    case C_RETURN:
+      break;
+    case C_CALL:
+      break;
+      */
+    }
+    i++;
+    buffer.pop_front();
+  }
+}
+
+void ASM_Writer::writeFile(std::ofstream &output_file)
+{
+  if (output_file.is_open())
+  {
+    output_file << output_buffer;
+  }
+  else
+  {
+    perror("output file has a problem, writing failed.");
+    exit(-1);
+  }
 }
