@@ -3,27 +3,42 @@
 #define _ASM_WRITER_
 
 #include <fstream>
+#include <string>
+#include <sstream>
 #include <deque>
 
-class ASM_Writer {
-  public:
-  std::ofstream output_stream;
+class ASM_Writer
+{
+private:
+  std::string vm_file_name;
+  std::string ouput_buffer;
+  std::stringstream output_s;
 
-  private:
-  ASM_Writer(std::ofstream& o_stream);
+public:
+  ASM_Writer();
   ~ASM_Writer();
 
-  void setFileName(std::deque<std::pair<int, std::string>> buffer);     // write new VM file  
-  void write(std::deque<std::pair<int, std::string>> buffer);
-  void Close();
+  //  generate code
+  void writeIncSP();
+  void writeDecSP();
 
-  // 
-  // write Arithmetic code
-  void writeArithmetic(std::string& command);  
-  // write push, pop command
-  void writePush(int segment, int index);
-  void writePop(int segment, int index);
+  void writeAdd();
+  void writeSub();
+  void writeGt(int i);
+  void writeLt(int i);
+  void writeEq(int i);
+  void writeNeg();
+  void writeAnd();
+  void writeOr();
+  void writeNot();
 
+  void writeSegPush(int segment, int index);
+  void writeSegPop(int segment, int index);
+
+  // translate a vm file
+  void translate(std::string vm_file_name, std::deque<std::tuple<int, int, int>> buffer);
+  // write to file
+  void writeFile(std::string asm_file_name);
 };
 
 #endif
