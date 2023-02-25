@@ -1,3 +1,4 @@
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
@@ -9,7 +10,6 @@
 
 ASM_Writer::ASM_Writer()
 {
-  output_s = std::stringstream(output_buffer);
 }
 
 ASM_Writer::~ASM_Writer()
@@ -121,7 +121,7 @@ void ASM_Writer::writeNot()
   writeIncSP();
 }
 
-void ASM_Writer::writeSegPush(int segment, int index)
+void ASM_Writer::writeSegPush(std::string vm_file_name, int segment, int index)
 {
   switch (segment)
   {
@@ -167,7 +167,7 @@ void ASM_Writer::writeSegPush(int segment, int index)
   writeIncSP();
 }
 
-void ASM_Writer::writeSegPop(int segment, int index)
+void ASM_Writer::writeSegPop(std::string vm_file_name, int segment, int index)
 {
   switch (segment)
   { // save destination address at R13
@@ -210,10 +210,10 @@ void ASM_Writer::writeSegPop(int segment, int index)
 ///////////////////////////////
 
 ///////////////////////////////
-void ASM_Writer::translate(std::string vm_file_nema, std::deque<std::tuple<int, int, int>> buffer)
+void ASM_Writer::translate(std::string vm_file_name, std::deque<std::tuple<int, int, int>> buffer)
 {
   int i = 0;
-  while (buffer.begin() != buffer.end())
+  while (!buffer.empty())
   {
     switch (std::get<0>(buffer.front()))
     {
@@ -245,10 +245,10 @@ void ASM_Writer::translate(std::string vm_file_nema, std::deque<std::tuple<int, 
       writeNot();
       break;
     case C_PUSH:
-      writeSegPush(std::get<1>(buffer.front()), std::get<2>(buffer.front()));
+      writeSegPush(vm_file_name, std::get<1>(buffer.front()), std::get<2>(buffer.front()));
       break;
     case C_POP:
-      writeSegPop(std::get<1>(buffer.front()), std::get<2>(buffer.front()));
+      writeSegPop(vm_file_name, std::get<1>(buffer.front()), std::get<2>(buffer.front()));
       break;
       /*
     case C_LABEL:
@@ -264,6 +264,8 @@ void ASM_Writer::translate(std::string vm_file_nema, std::deque<std::tuple<int, 
     case C_CALL:
       break;
       */
+    default:
+      break;
     }
     i++;
     buffer.pop_front();
@@ -274,11 +276,16 @@ void ASM_Writer::writeFile(std::ofstream &output_file)
 {
   if (output_file.is_open())
   {
-    output_file << output_buffer;
+    output_file << output_s.str() << std::endl;
   }
   else
   {
     perror("output file has a problem, writing failed.");
     exit(-1);
   }
+}
+
+void ASM_Writer::showAll()
+{
+  std::cout << output_s.str() << std::endl;
 }
