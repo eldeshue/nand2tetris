@@ -22,6 +22,17 @@ std::vector<VM_Parser> parsers;
 std::vector<std::string> asm_file_name;
 std::vector<std::pair<std::string, std::deque<std::tuple<int, int, int>>>> command_buffer;
 
+void processing_file_name(std::string& str)
+{
+  std::string::size_type pos;
+  while((pos = str.find('/', 0)) != std::string::npos){
+    str.erase(str.begin(), str.begin() + pos + 1);
+  }
+  // erase dot
+  pos = str.find('.', 0);
+  str.erase(str.begin() + pos, str.end());
+}
+
 int main(int argc, char *argv[])
 {
   // set VM parsers, 1 parser each on every vm files.
@@ -36,7 +47,9 @@ int main(int argc, char *argv[])
   {
     for (int i = 2; i < argc; i++)
     {
-      asm_file_name.push_back(argv[i]);
+      std::string temp(argv[i]);
+      processing_file_name(temp);
+      asm_file_name.push_back(temp);
       parsers.push_back(VM_Parser(std::ifstream(argv[i]))); // assign rvalue
     }
   }

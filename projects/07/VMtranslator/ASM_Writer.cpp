@@ -99,7 +99,7 @@ void ASM_Writer::writeNeg()
 void ASM_Writer::writeAnd()
 {
   writeDecSP();
-  output_s << "@SP\nA=M\nD=M"; // D = y
+  output_s << "@SP\nA=M\nD=M\n"; // D = y
   writeDecSP();
   output_s << "@SP\nA=M\nD=M&D\n@SP\nA=M\nM=D\n"; // M = x, M & D
   writeIncSP();
@@ -108,7 +108,7 @@ void ASM_Writer::writeAnd()
 void ASM_Writer::writeOr()
 {
   writeDecSP();
-  output_s << "@SP\nA=M\nD=M";
+  output_s << "@SP\nA=M\nD=M\n";
   writeDecSP();
   output_s << "@SP\nA=M\nD=M|D\n@SP\nA=M\nM=D\n";
   writeIncSP();
