@@ -1,3 +1,4 @@
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <deque>
@@ -8,7 +9,7 @@
 #include "arg1_Type.h"
 #include "arg2_Type.h"
 
-VM_Parser::VM_Parser(std::ifstream &i_stream)
+VM_Parser::VM_Parser(std::ifstream i_stream)
 {
 
   if (i_stream.is_open()) // read a file at a time.
@@ -121,18 +122,16 @@ void eraseEmptyLine(std::string &command)
   command.erase(command.end() - 1);
 }
 
-void VM_Parser::parseCommand(std::deque<std::tuple<int, int, int>> buffer)
+void VM_Parser::parseCommand(std::deque<std::tuple<int, int, int>> &buffer)
 {
-
   eraseComment(input_string_stream);
   eraseEmptyLine(input_string_stream);
 
   std::istringstream isstream(input_string_stream);
   std::string current_command;
 
-  while (isstream)
+  while (getline(isstream, current_command)) // unless, repeat last line twice
   {
-    getline(isstream, current_command);
     std::istringstream cstream(current_command);
 
     std::string com;
