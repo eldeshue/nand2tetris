@@ -14,18 +14,16 @@ class VM_Parser
 {
 private:
   std::string input_string_stream;
-  std::unordered_map<std::string, int> arg1_table;
-  std::unordered_map<std::string, int> arg2_table;
+  std::unordered_map<std::string, int> command_table;
 
 public:
   VM_Parser(std::ifstream i_stream);
   // VM_Parser(std::ifstream &i_stream);
   ~VM_Parser();
 
-  int arg1Type(std::string &command); // return type of the first arg, operator
-  int arg2Type(std::string &command); // return type of the second arg, segment
+  int comType(std::string &command); // return type of the first arg, operator
 
-  void parseCommand(std::deque<std::tuple<int, int, int>> &buffer); // put parsed commands to the buffer
+  void parseCommand(std::deque<std::tuple<int, std::string, std::string>> &buffer); // put parsed commands to the buffer
 };
 
 void eraseComment(std::string &command);   // erase comments

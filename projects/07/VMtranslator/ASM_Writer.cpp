@@ -10,10 +10,33 @@
 
 ASM_Writer::ASM_Writer()
 {
+  // type of segment
+  segment_table.insert(std::make_pair("argument", ARGUMENT));
+  segment_table.insert(std::make_pair("local", LOCAL));
+  segment_table.insert(std::make_pair("static", STATIC));
+  segment_table.insert(std::make_pair("constant", CONST));
+  segment_table.insert(std::make_pair("this", THIS));
+  segment_table.insert(std::make_pair("that", THAT));
+  segment_table.insert(std::make_pair("pointer", POINTER));
+  segment_table.insert(std::make_pair("temp", TEMP));
 }
 
 ASM_Writer::~ASM_Writer()
 {
+  segment_table.clear();
+}
+
+int ASM_Writer::segType(std::string &command)
+{
+  // hash table, unordered map
+  if (segment_table.find(command) == segment_table.end())
+  {
+    return 0;
+  }
+  else
+  {
+    return segment_table[command];
+  }
 }
 
 void ASM_Writer::writeIncSP()
@@ -121,9 +144,9 @@ void ASM_Writer::writeNot()
   writeIncSP();
 }
 
-void ASM_Writer::writeSegPush(std::string vm_file_name, int segment, int index)
+void ASM_Writer::writeSegPush(std::string vm_file_name, std::string segment, std::string index)
 {
-  switch (segment)
+  switch (segType(segment))
   {
   case ARGUMENT:
     output_s << "@ARG\nD=M\n";
@@ -167,9 +190,9 @@ void ASM_Writer::writeSegPush(std::string vm_file_name, int segment, int index)
   writeIncSP();
 }
 
-void ASM_Writer::writeSegPop(std::string vm_file_name, int segment, int index)
+void ASM_Writer::writeSegPop(std::string vm_file_name, std::string segment, std::string index)
 {
-  switch (segment)
+  switch (segType(segment))
   { // save destination address at R13
   case ARGUMENT:
     output_s << "@ARG\nD=M\n@" << index
@@ -210,7 +233,8 @@ void ASM_Writer::writeSegPop(std::string vm_file_name, int segment, int index)
 ///////////////////////////////
 
 ///////////////////////////////
-void ASM_Writer::translate(std::string vm_file_name, std::deque<std::tuple<int, int, int>> buffer)
+void ASM_Writer::translate(std::string vm_file_name,
+                           std::deque<std::tuple<int, std::string, std::string>> buffer)
 {
   int i = 0;
   while (!buffer.empty())

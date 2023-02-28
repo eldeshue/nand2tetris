@@ -29,67 +29,45 @@ VM_Parser::VM_Parser(std::ifstream i_stream)
 
   // initiate hash table
   // type of command
-  arg1_table.insert(std::make_pair("add", C_ADD));
-  arg1_table.insert(std::make_pair("sub", C_SUB));
-  arg1_table.insert(std::make_pair("neg", C_NEG));
-  arg1_table.insert(std::make_pair("eq", C_EQ));
-  arg1_table.insert(std::make_pair("gt", C_GT));
-  arg1_table.insert(std::make_pair("lt", C_LT));
-  arg1_table.insert(std::make_pair("and", C_AND));
-  arg1_table.insert(std::make_pair("or", C_OR));
-  arg1_table.insert(std::make_pair("not", C_NOT));
-  arg1_table.insert(std::make_pair("push", C_PUSH));
-  arg1_table.insert(std::make_pair("pop", C_POP));
-  arg1_table.insert(std::make_pair("label", C_LABEL));
-  arg1_table.insert(std::make_pair("goto", C_GOTO));
-  arg1_table.insert(std::make_pair("if", C_IF));
-  arg1_table.insert(std::make_pair("function", C_FUNCTION));
-  arg1_table.insert(std::make_pair("return", C_RETURN));
-  arg1_table.insert(std::make_pair("call", C_CALL));
-
-  // type of segment
-  arg2_table.insert(std::make_pair("argument", ARGUMENT));
-  arg2_table.insert(std::make_pair("local", LOCAL));
-  arg2_table.insert(std::make_pair("static", STATIC));
-  arg2_table.insert(std::make_pair("constant", CONST));
-  arg2_table.insert(std::make_pair("this", THIS));
-  arg2_table.insert(std::make_pair("that", THAT));
-  arg2_table.insert(std::make_pair("pointer", POINTER));
-  arg2_table.insert(std::make_pair("temp", TEMP));
+  command_table.insert(std::make_pair("add", C_ADD));
+  command_table.insert(std::make_pair("sub", C_SUB));
+  command_table.insert(std::make_pair("neg", C_NEG));
+  command_table.insert(std::make_pair("eq", C_EQ));
+  command_table.insert(std::make_pair("gt", C_GT));
+  command_table.insert(std::make_pair("lt", C_LT));
+  command_table.insert(std::make_pair("and", C_AND));
+  command_table.insert(std::make_pair("or", C_OR));
+  command_table.insert(std::make_pair("not", C_NOT));
+  command_table.insert(std::make_pair("push", C_PUSH));
+  command_table.insert(std::make_pair("pop", C_POP));
+  command_table.insert(std::make_pair("label", C_LABEL));
+  command_table.insert(std::make_pair("goto", C_GOTO));
+  command_table.insert(std::make_pair("if", C_IF));
+  command_table.insert(std::make_pair("function", C_FUNCTION));
+  command_table.insert(std::make_pair("return", C_RETURN));
+  command_table.insert(std::make_pair("call", C_CALL));
 }
 VM_Parser::~VM_Parser()
 {
   // clear string
   input_string_stream.clear();
   // clear hash table
-  arg1_table.clear();
-  arg2_table.clear();
+  command_table.clear();
 }
 ///////////////////////////////////////////////////
-int VM_Parser::arg1Type(std::string &command)
+int VM_Parser::comType(std::string &command)
 {
   // hash table, unordered map
-  if (arg1_table.find(command) == arg1_table.end()) // not included
+  if (command_table.find(command) == command_table.end()) // not included
   {
     return 0;
   }
   else
   {
-    return arg1_table[command];
+    return command_table[command];
   }
 }
-int VM_Parser::arg2Type(std::string &command)
-{
-  // hash table, unordered map
-  if (arg2_table.find(command) == arg2_table.end())
-  {
-    return 0;
-  }
-  else
-  {
-    return arg2_table[command];
-  }
-}
+
 ////////////////////////////////////////////////////
 void eraseComment(std::string &command)
 {
@@ -122,7 +100,7 @@ void eraseEmptyLine(std::string &command)
   command.erase(command.end() - 1);
 }
 
-void VM_Parser::parseCommand(std::deque<std::tuple<int, int, int>> &buffer)
+void VM_Parser::parseCommand(std::deque<std::tuple<int, std::string, std::string>> &buffer)
 {
   eraseComment(input_string_stream);
   eraseEmptyLine(input_string_stream);
@@ -135,11 +113,11 @@ void VM_Parser::parseCommand(std::deque<std::tuple<int, int, int>> &buffer)
     std::istringstream cstream(current_command);
 
     std::string com;
-    std::string seg = "";
-    int value = 0;
-    cstream >> com >> seg >> value;
-    buffer.push_back(std::make_tuple(arg1Type(com),
-                                     arg2Type(seg),
-                                     value));
+    std::string arg1 = "";
+    std::string arg2 = "";
+    cstream >> com >> arg1 >> arg2;
+    buffer.push_back(std::make_tuple(comType(com),
+                                     arg1,
+                                     arg2));
   }
 }

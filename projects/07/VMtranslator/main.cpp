@@ -20,12 +20,13 @@
 
 std::vector<VM_Parser> parsers;
 std::vector<std::string> asm_file_name;
-std::vector<std::pair<std::string, std::deque<std::tuple<int, int, int>>>> command_buffer;
+std::vector<std::pair<std::string, std::deque<std::tuple<int, std::string, std::string>>>> command_buffer;
 
-void processing_file_name(std::string& str)
+void processing_file_name(std::string &str)
 {
   std::string::size_type pos;
-  while((pos = str.find('/', 0)) != std::string::npos){
+  while ((pos = str.find('/', 0)) != std::string::npos)
+  {
     str.erase(str.begin(), str.begin() + pos + 1);
   }
   // erase dot
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
   // parse each .vm files
   for (int i = 0; i < argc - 2; i++)
   {
-    std::deque<std::tuple<int, int, int>> temp;
+    std::deque<std::tuple<int, std::string, std::string>> temp;
     parsers[i].parseCommand(temp);
     command_buffer.push_back(std::make_pair(asm_file_name[i], temp));
   }
