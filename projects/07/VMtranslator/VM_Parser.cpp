@@ -42,7 +42,7 @@ VM_Parser::VM_Parser(std::ifstream i_stream)
   command_table.insert(std::make_pair("pop", C_POP));
   command_table.insert(std::make_pair("label", C_LABEL));
   command_table.insert(std::make_pair("goto", C_GOTO));
-  command_table.insert(std::make_pair("if", C_IF));
+  command_table.insert(std::make_pair("if-goto", C_IF));
   command_table.insert(std::make_pair("function", C_FUNCTION));
   command_table.insert(std::make_pair("return", C_RETURN));
   command_table.insert(std::make_pair("call", C_CALL));
