@@ -24,9 +24,11 @@ public:
   int segType(std::string &command);
 
   //  generate code
+  // Stack Pointer control
   void writeIncSP();
   void writeDecSP();
 
+  // Arithmatic operation
   void writeAdd();
   void writeSub();
   void writeGt(int i, std::string &s);
@@ -37,8 +39,22 @@ public:
   void writeOr();
   void writeNot();
 
+  // flow control
+  void writeLabel(std::string &label);
+  void writeGoto(std::string &label);
+  void writeIfGoto(std::string &label);
+
+  // subroutine
+  void writeCall(int index, std::string &function_name, std::string &argc);
+  void writeFunction(std::string &function_name, std::string &local_varc);
+  void writeReturn();
+
+  // memory access
   void writeSegPush(std::string vm_file_name, std::string segment, std::string index);
   void writeSegPop(std::string vm_file_name, std::string segment, std::string index);
+
+  // initial routine
+  void writeInitial();
 
   // translate a vm file
   void translate(std::string vm_file_name, std::deque<std::tuple<int, std::string, std::string>> buffer);
