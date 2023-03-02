@@ -10,6 +10,7 @@
 
 ASM_Writer::ASM_Writer()
 {
+  i = 0;
   // type of segment
   segment_table.insert(std::make_pair("argument", ARGUMENT));
   segment_table.insert(std::make_pair("local", LOCAL));
@@ -206,15 +207,19 @@ void ASM_Writer::writeFunction(std::string &function, std::string &local_varc)
 
 void ASM_Writer::writeReturn()
 {
+  // R14 is a pointer of the return address
+  output_s << "@LCL\nD=M\n@5\nD=D-A\n@R14\nM=D\n"; 
+  // save return address at R15
+  output_s << "@R14\nA=M\nD=M\n@R15\nM=D\n";
+
   // set return value at ARG
   writeDecSP();
   output_s << "@SP\nA=M\nD=M\n@ARG\nA=M\nM=D\n";
+
+  // restore the previous frame
   // restore the previous SP from current ARG
   output_s << "@ARG\nD=M\n@SP\nM=D\n";
   writeIncSP();
-
-  // restore the previous frame
-  output_s << "@LCL\nD=M\n@5\nD=D-A\n@R14\nM=D\n"; // R14 is pointer of return-address
   // restore LCL
   output_s << "@R14\nA=M\nA=A+1\nD=M\n@LCL\nM=D\n";
   // restore ARG
@@ -223,9 +228,9 @@ void ASM_Writer::writeReturn()
   output_s << "@R14\nD=M\n@3\nA=A+D\nD=M\n@THIS\nM=D\n";
   // restore THAT
   output_s << "@R14\nD=M\n@4\nA=A+D\nD=M\n@THAT\nM=D\n";
-
+  
   // jump back to the return address
-  output_s << "@R14\nA=M\nA=M\n0;JMP\n";
+  output_s << "@R15\nA=M\n0;JMP\n";
 }
 
 void ASM_Writer::writeSegPush(std::string vm_file_name, std::string segment, std::string index)
@@ -287,7 +292,7 @@ void ASM_Writer::writeSegPop(std::string vm_file_name, std::string segment, std:
              << "\nD=A+D\n@R13\nM=D\n";
     break;
   case STATIC:
-    output_s << "@" << vm_file_name << "." << index
+    output_s << "@"<< vm_file_name << "." << index
              << "\nD=A\n@R13\nM=D\n";
     break;
   case CONST: // potential threat?
@@ -333,7 +338,6 @@ void ASM_Writer::writeInitial()
 void ASM_Writer::translate(std::string vm_file_name,
                            std::deque<std::tuple<int, std::string, std::string>> buffer)
 {
-  int i = 0;
 
   writeInitial();
 

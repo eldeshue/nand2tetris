@@ -15,6 +15,7 @@ class ASM_Writer
 private:
   std::ostringstream output_s;
   std::unordered_map<std::string, int> segment_table;
+  int i;
 
 public:
   ASM_Writer();
